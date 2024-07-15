@@ -82,7 +82,7 @@ public class TileMapGameObjectController : MonoBehaviour
     public void LevelReGenerate()
     {
         //清除
-        Transform snakeTransf = GameObject.Find("SnakeParent").transform;
+        Transform snakeTransf = GameObject.Find("SnakeParent(Clone)").transform;
         snakeTransf.gameObject.SetActive(false);
         Destroy(snakeTransf.gameObject);
         var newSnake = GameObject.Instantiate(snakeCopy);
@@ -95,9 +95,15 @@ public class TileMapGameObjectController : MonoBehaviour
             GridSingle _grid = _tileMap.Value.GetComponentInChildren<GridSingle>();
             _grid.direction = Directions.None;
             _grid.catOn = false;
+            _grid.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            if( _grid.transform.GetChild(0).childCount >= 2){
+            _grid.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
+            Destroy(_grid.transform.GetChild(0).GetChild(1).gameObject);
+            }
+            if( _grid.transform.GetChild(0).childCount >= 1 && _grid.transform.GetChild(0).childCount < 2){
             _grid.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             Destroy(_grid.transform.GetChild(0).GetChild(0).gameObject);
-            _grid.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            }
         }
     }
     void GenerateFood()
@@ -166,6 +172,7 @@ public class TileMapGameObjectController : MonoBehaviour
             currentFoods.Remove(foodObject);
         }
         Destroy(foodObject);
+        scrollManager.setBallIndex(foodObject.GetComponent<Food>());
         _grid.food = null;
         GenerateFood();
         scrollManager.StartCoroutine("CatBottom"); 
@@ -204,7 +211,6 @@ public class TileMapGameObjectController : MonoBehaviour
     #region �����л�
     public void FilpAllTile(Vector2Int _startPos)
     {
-        StartCoroutine(FindObjectOfType<ScrollManager>().CatBottom());
         StartCoroutine(FilpAllTileIEnum(_startPos));
     }
     public float flipTimeSplit = 0.5f;

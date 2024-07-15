@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class SnakeHead : MonoBehaviour
 {
@@ -76,6 +77,7 @@ public class SnakeHead : MonoBehaviour
                             pause=true;
                             Debug.Log("Game Over (arrow)");
                             soundEffect("14");
+                            SceneManager.LoadScene("SettlementScene");
                             //TODO: end game
                         }else{
                             this.direction=(int)currentGridInfo.direction;
@@ -89,6 +91,7 @@ public class SnakeHead : MonoBehaviour
                         pause=true;
                         Debug.Log("Game Over (self)");
                         soundEffect("13");
+                        SceneManager.LoadScene("SettlementScene");
                         //TODO: end game
                     }
                 }else{
@@ -156,5 +159,8 @@ public class SnakeHead : MonoBehaviour
     public void soundEffect(string name)
     {
         SoundManager.Instance.EffectPlayStr(name);
+    }
+    public void setSystemPause(bool sp){
+        systemPause = sp;
     }
 }

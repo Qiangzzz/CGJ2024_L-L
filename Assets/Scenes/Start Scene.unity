@@ -2408,7 +2408,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 1217433628}
         m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
-        m_MethodName: MuscilPlayStr
+        m_MethodName: MusicPlayStr
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -1,67 +1,95 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ScrollManager : MonoBehaviour
 {
     public List<Sprite> BallSprites;
-    public GameObject ballPrefab; // Ô¤ÖÆÌå£¬ÓÃÓÚÉú³ÉÇò
-    public BoxCollider2D spawnArea; // BoxCollider2DÇøÓò
+    public GameObject ballPrefab; // Ô¤ï¿½ï¿½ï¿½å£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    public BoxCollider2D spawnArea; // BoxCollider2Dï¿½ï¿½ï¿½ï¿½
 
     public float angleRange = 30f;
-    public float minSpeed = 1f; // ×îÐ¡ËÙ¶È
-    public float maxSpeed = 5f; // ×î´óËÙ¶È
-    public float minAngularSpeed = -360f; // ×îÐ¡½ÇËÙ¶È
-    public float maxAngularSpeed = 360f; // ×î´ó½ÇËÙ¶È
+    public float minSpeed = 1f; // ï¿½ï¿½Ð¡ï¿½Ù¶ï¿½
+    public float maxSpeed = 5f; // ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
+    public float minAngularSpeed = -360f; // ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½Ù¶ï¿½
+    public float maxAngularSpeed = 360f; // ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
 
     
-    public int catcount = 60;
+    public int catcount = 1;
     public float splitTime = 0.4f;
-
-
+    public Text scoreBoard;
+    public int score;
+    private int ballIndex;
+    public void setBallIndex(Food food){
+        switch(food.foodType){
+            case FoodType.Type1:
+            ballIndex = 0;
+            break;
+            case FoodType.Type2:
+            ballIndex = 1;
+            break;
+            case FoodType.Type3:
+            ballIndex = 2;
+            break;
+            case FoodType.Type4:
+            ballIndex = 3;
+            break;
+            case FoodType.Type5:
+            ballIndex = 4;
+            break;
+            case FoodType.Type6:
+            ballIndex = 5;
+            break;
+            default:
+            break;
+        }
+    }
     public IEnumerator CatBottom()
     {
-        Animator anim = GetComponent<Animator>();
-        anim.Play("bottle2");
+        //Animator anim = GetComponent<Animator>();
+        //anim.Play("bottle2");
         
      
         for (int i = 0; i < catcount; i++)
         {
-            int ballIndex = Random.Range(0, BallSprites.Count);
             SpawnBall(ballIndex);
+            score += 1;
+            scoreBoard.text = score.ToString();
+            PlayerPrefs.SetString("score", scoreBoard.text);
             yield return new WaitForSeconds(splitTime);
         }
 
         yield return new WaitForSeconds(2f);
-        GetComponent<Animator>().Play("bottle");
+        //GetComponent<Animator>().Play("bottle");
     }
     
     void SpawnBall(int _index)
     {
-        // »ñÈ¡BoxCollider2DµÄ±ß½ç
+        // ï¿½ï¿½È¡BoxCollider2Dï¿½Ä±ß½ï¿½
         Bounds bounds = spawnArea.bounds;
 
-        // ÔÚBoxCollider2D·¶Î§ÄÚËæ»úÉú³ÉÒ»¸öÎ»ÖÃ
+        // ï¿½ï¿½BoxCollider2Dï¿½ï¿½Î§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Î»ï¿½ï¿½
         float randomX = Random.Range(bounds.min.x, bounds.max.x);
         float randomY = Random.Range(bounds.min.y, bounds.max.y);
         Vector2 randomPosition = new Vector2(randomX, randomY);
 
-        // Éú³ÉÇò
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         GameObject ball = Instantiate(ballPrefab, randomPosition, Quaternion.identity);
         ball.GetComponentInChildren<SpriteRenderer>().sprite = BallSprites[_index];
-        // »ñÈ¡ÇòµÄRigidbody2D×é¼þ
+        // ï¿½ï¿½È¡ï¿½ï¿½ï¿½Rigidbody2Dï¿½ï¿½ï¿½
         Rigidbody2D rb = ball.GetComponent<Rigidbody2D>();
 
-        // ¸øÇòÒ»¸ö³¯ÏÂµÄËæ»úËÙ¶È
+        // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½ï¿½Ù¶ï¿½
         float randomSpeed = Random.Range(minSpeed, maxSpeed);
         float randomAngle = Random.Range(-angleRange, angleRange);
         float angleInRadians = randomAngle * Mathf.Deg2Rad;
 
-        // ¼ÆËãËÙ¶ÈµÄxºÍy·ÖÁ¿
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ù¶Èµï¿½xï¿½ï¿½yï¿½ï¿½ï¿½ï¿½
         Vector2 velocity = new Vector2(Mathf.Sin(angleInRadians), -Mathf.Cos(angleInRadians)) * randomSpeed;
         rb.velocity = velocity;
         
-        // ¸øÇòÒ»¸öËæ»úÐý×ª½ÇËÙ¶È
+        // ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½Ù¶ï¿½
         float randomAngularSpeed = Random.Range(minAngularSpeed, maxAngularSpeed);
         rb.angularVelocity = randomAngularSpeed;
     }

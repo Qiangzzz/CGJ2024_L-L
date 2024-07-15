@@ -37,12 +37,14 @@ public class TrailController : MonoBehaviour
             if(Input.GetMouseButtonDown(0) && MouseGrid.direction == Directions.None)
             {
                 SetTrail(MouseGrid, CurDirect);
+                CurDirect =Directions.None;
+                mouseGo.GetComponentInChildren<SpriteRenderer>().sprite = null;
             }
         }
 
     }
     public void SetCurTrailDirect(Directions _direct)
-    {
+    {CurDirect =
         CurDirect = _direct;
         mouseGo.GetComponentInChildren<SpriteRenderer>().sprite = trailSprites[(int)_direct -1];
     }

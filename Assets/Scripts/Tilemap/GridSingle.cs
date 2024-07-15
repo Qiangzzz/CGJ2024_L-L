@@ -31,8 +31,14 @@ public class GridSingle : MonoBehaviour
         if(passNumber == 2){
             passNumber = 1;
             SetTrail(Directions.None);
+            if(this.gameObject.transform.GetChild(0).childCount >= 2){
+            this.gameObject.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
+            Destroy(this.gameObject.transform.GetChild(0).GetChild(1).gameObject);
+            }
+            if( this.gameObject.transform.GetChild(0).childCount >= 1 && this.gameObject.transform.GetChild(0).childCount < 2){
             this.gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             Destroy(this.gameObject.transform.GetChild(0).GetChild(0).gameObject);
+            }
         }
         if(passNumber < 2){passNumber++;}
 

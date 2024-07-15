@@ -50,7 +50,7 @@ public class SoundManager : MonoBehaviour
     }
 
 
-    public void MusciPlayClip(AudioClip clip)
+    public void MusicPlayClip(AudioClip clip)
     {
         if (_musicSource.clip != null) soundTime[_musicSource.clip] = _musicSource.time;
         _musicSource.Stop();
@@ -104,9 +104,9 @@ public class SoundManager : MonoBehaviour
         _musicSource.mute = !_musicSource.mute;
     }
 
-    public void MuscilPlayStr(string str)
+    public void MusicPlayStr(string str)
     {
-        if (soundClip.ContainsKey(str)) MusciPlayClip(soundClip[str]);
+        if (soundClip.ContainsKey(str)) MusicPlayClip(soundClip[str]);
     }
     public void EffectPlayStr(string str)
     {
