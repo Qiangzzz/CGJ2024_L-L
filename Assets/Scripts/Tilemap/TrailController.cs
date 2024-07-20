@@ -14,6 +14,8 @@ public class TrailController : MonoBehaviour
     public GameObject mouseGo, TrailPrefab;
 
     public List<Sprite> trailSprites;
+    public List<Sprite> trailSpritesUI;
+    public List<Sprite> trailSpritesBroken;
 
 
     private void Awake()
@@ -71,5 +73,13 @@ public class TrailController : MonoBehaviour
     public Sprite DirectToSprite(Directions _direct)
     {
         return trailSprites[(int)_direct - 1];
+    }
+    public Sprite DirectToSpriteUI(Directions _direct)
+    {
+        return trailSpritesUI[(int)_direct - 1];
+    }
+    public Sprite DirectToSpriteBroken(Directions _direct)
+    {
+        return trailSpritesBroken[(int)_direct - 1];
     }
 }

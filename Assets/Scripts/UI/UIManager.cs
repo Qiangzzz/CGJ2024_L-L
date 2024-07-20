@@ -48,7 +48,7 @@ public class UIManager : MonoBehaviour
             int _indexBuffer = i;
             _btnGo = transform.GetChild(i+2);
             _btnGo.GetComponentInChildren<Text>().text = CurLevelDirections[i].ToString();
-            _btnGo.GetComponent<Image>().sprite = GridControllerTransf.GetComponent<TrailController>().DirectToSprite(CurLevelDirections[_indexBuffer]);
+            _btnGo.GetComponent<Image>().sprite = GridControllerTransf.GetComponent<TrailController>().DirectToSpriteUI(CurLevelDirections[_indexBuffer]);
 
             _btnGo.GetComponentInChildren<Button>().onClick.AddListener(() =>
             {
@@ -65,7 +65,7 @@ public class UIManager : MonoBehaviour
         CurLevelDirections[_index] = (Directions)pickedNumbers[_index];
         _btnGo = transform.GetChild(_index+2);
         _btnGo.GetComponentInChildren<Text>().text = CurLevelDirections[_index].ToString();
-        _btnGo.GetComponent<Image>().sprite = GridControllerTransf.GetComponent<TrailController>().DirectToSprite(CurLevelDirections[_index]);
+        _btnGo.GetComponent<Image>().sprite = GridControllerTransf.GetComponent<TrailController>().DirectToSpriteUI(CurLevelDirections[_index]);
 
     }
     int ChangePickedNumber()

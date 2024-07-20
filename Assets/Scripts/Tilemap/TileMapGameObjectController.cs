@@ -46,6 +46,7 @@ public class TileMapGameObjectController : MonoBehaviour
 
     [Header("ʳ��")]
     public GameObject[] foodPrefabs; // ��������ʳ���Ԥ�Ƽ�����
+    public GameObject[] EasterEggFoodPrefabs;
     public List<GameObject> foodObjects = new List<GameObject>(); // �洢���ɵ�ʳ�����
     public float foodGenerationProbability = 0.1f; // ʳ�����ɸ���
     private List<GameObject> currentFoods = new List<GameObject>(); // ��ǰ���ɵ�ʳ���б�
@@ -122,9 +123,17 @@ public class TileMapGameObjectController : MonoBehaviour
             
             if (Random.value < foodGenerationProbability)
             {
-                int foodIndex = Random.Range(0, foodPrefabs.Length);
-                GameObject foodPrefab = foodPrefabs[foodIndex];
-
+                float randomNumber = Random.Range(0f,1f);
+                GameObject foodPrefab = foodPrefabs[0];
+                int foodIndex = 0;
+                if(randomNumber < 0.01f){
+                    foodIndex = Random.Range(0, EasterEggFoodPrefabs.Length);
+                    foodPrefab = EasterEggFoodPrefabs[foodIndex];
+                }
+                else if(randomNumber >= 0.01f){
+                    foodIndex = Random.Range(0, foodPrefabs.Length);
+                    foodPrefab = foodPrefabs[foodIndex];
+                }
                 Vector3 foodLocalPosition = new Vector3(Random.Range(-0.05f, 0.05f), Random.Range(-0.05f, 0.05f), 0);
                 GameObject foodObject = Instantiate(foodPrefab, Vector3.zero, Quaternion.identity, _gridTransf);
                 foodObject.transform.localPosition = foodLocalPosition;

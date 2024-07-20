@@ -41,6 +41,15 @@ public class ScrollManager : MonoBehaviour
             case FoodType.Type6:
             ballIndex = 5;
             break;
+            case FoodType.Type7:
+            ballIndex = 6;
+            break;
+            case FoodType.Type8:
+            ballIndex = 7;
+            break;
+            case FoodType.Type9:
+            ballIndex = 8;
+            break;
             default:
             break;
         }
