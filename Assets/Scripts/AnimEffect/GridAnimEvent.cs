@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GridAnimEvent : MonoBehaviour
 {
-    public Sprite level0TargetSprite,level1TargetSprite,level2TargetSprite;
+    public Sprite level0TargetSprite,level1TargetSprite,level2TargetSprite,level3TargetSprite,level4TargetSprite;
     private TileMapGameObjectController tileMapController;
     private void Awake()
     {
@@ -17,10 +17,10 @@ public class GridAnimEvent : MonoBehaviour
         Sprite _targetSprite = null;
         switch (TileMapGameObjectController.CurLevel)
         {
-            case 3:
-                //todo //ÓÎÏ·½áÊø
+            case 5:
+                //todo //ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½
                 _targetSprite = level0TargetSprite;
-                TileMapGameObjectController.CurLevel = 0;
+                TileMapGameObjectController.CurLevel = 1;
                 return;
                 break;
             case 1:
@@ -29,12 +29,18 @@ public class GridAnimEvent : MonoBehaviour
             case 2:
                 _targetSprite = level2TargetSprite;
                 break;
+            case 3:
+                _targetSprite = level3TargetSprite;
+                break;
+            case 4:
+                _targetSprite = level4TargetSprite;
+                break;
             default:
                 return;
         }
         GetComponentInChildren<SpriteRenderer>().sprite = _targetSprite;
 
-        //É¾³ý¾ÉµÄÐ¡ÎïÌå£¬ÐÂ½¨ÐÂµÄÐ¡ÎïÌå
+        //É¾ï¿½ï¿½ï¿½Éµï¿½Ð¡ï¿½ï¿½ï¿½å£¬ï¿½Â½ï¿½ï¿½Âµï¿½Ð¡ï¿½ï¿½ï¿½ï¿½
         tileMapController.ReGenerateSmallGameObject(transform);
         
     }

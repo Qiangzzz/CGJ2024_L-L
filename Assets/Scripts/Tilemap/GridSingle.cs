@@ -44,11 +44,13 @@ public class GridSingle : MonoBehaviour
             this.gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             Destroy(this.gameObject.transform.GetChild(0).GetChild(0).gameObject);
             }
+            SoundManager.Instance.EffectPlayStr("19");
         }
         if(passNumber < 1 && !PNchanged){
             Transform _spriteTrailPrefab = this.gameObject.transform.GetChild(0).gameObject.transform.Find("TrailPrefab(Clone)");
             _spriteTrailPrefab.GetComponent<SpriteRenderer>().sprite = GridControllerTransf.GetComponent<TrailController>().DirectToSpriteBroken(direction);
             passNumber++;
+            SoundManager.Instance.EffectPlayStr("11");
         }
         PNchanged = false;
 

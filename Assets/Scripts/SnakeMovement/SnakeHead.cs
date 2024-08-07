@@ -15,7 +15,7 @@ public class SnakeHead : MonoBehaviour
     private bool moveStage=false;
     private bool isGrowing;
     private SnakeBody nextBody=null;
-    private bool systemPause=false, pause=true;
+    private bool systemPause=false, pause=false;
     public Transform parent;
     public int forwardTimer, forwardPeriod, waveTimer, wavePeriod, acceleratedPeriod;
     public float normalScale;
@@ -23,6 +23,7 @@ public class SnakeHead : MonoBehaviour
     private HeadAnimation animator;
     private Color shadowColor;
     private bool toNextLevel=false;
+    private bool canGrow = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -57,7 +58,7 @@ public class SnakeHead : MonoBehaviour
                     }
                     currentGrid=targetGrid;
                     GridSingle currentGridInfo=tileController.GetTileObject((Vector2Int)currentGrid).GetComponent<GridSingle>();
-                    if(currentGridInfo.food != null){
+                    if(currentGridInfo.food != null && canGrow){
                         isGrowing=true;
                         if(nextBody != null){
                             nextBody.addTail((int)currentGridInfo.food.GetComponent<Food>().foodType, currentGrid, direction);
@@ -69,14 +70,15 @@ public class SnakeHead : MonoBehaviour
                             nextBody.activeGrow();
                         }
                         tileController.RemoveFood((Vector2Int)currentGrid);
-                        soundEffect("10");
                         //TODO: add 1 point
                     }
-                    if(currentGridInfo.direction>0){
+                    if(currentGridInfo.direction>0 && canGrow){
                         if(((int)currentGridInfo.direction-this.direction+6)%6==3){
                             pause=true;
                             Debug.Log("Game Over (arrow)");
                             soundEffect("14");
+                            SoundManager.Instance.MusicStop();
+                            SoundManager.Instance.EffectPlayStr("3");
                             SceneManager.LoadScene("SettlementScene");
                             //TODO: end game
                         }else{
@@ -84,15 +86,21 @@ public class SnakeHead : MonoBehaviour
                             transform.rotation=Quaternion.Euler(0f,0f,60f*(4-this.direction));
                             currentGridInfo.addPassNumber();
                         }
-                        soundEffect("11");
                     }
                     targetGrid=manager.move(currentGrid, direction);
-                    if(tileController.GetTileObject((Vector2Int)targetGrid).GetComponent<GridSingle>().catOn){
+                    if(tileController.GetTileObject((Vector2Int)targetGrid).GetComponent<GridSingle>().catOn && canGrow){
                         pause=true;
                         Debug.Log("Game Over (self)");
                         soundEffect("13");
+                        SoundManager.Instance.MusicStop();
+                        SoundManager.Instance.EffectPlayStr("3");
                         SceneManager.LoadScene("SettlementScene");
                         //TODO: end game
+                    }
+                    if(currentGridInfo.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Grid_End")){
+                        this.gameObject.GetComponent<SpriteRenderer>().color = new Color(255,255,255,0);
+                        canGrow = false;
+                        SoundManager.Instance.EffectPlayStr("22");
                     }
                 }else{
                     setGridCatOn(targetGrid, true);
@@ -148,9 +156,13 @@ public class SnakeHead : MonoBehaviour
         return grid.CellToWorld(cellPosition);
     }
     public void setGridCatOn(Vector3Int gridPosition, bool state){
+        GridSingle currentGridInfo=tileController.GetTileObject((Vector2Int)currentGrid).GetComponent<GridSingle>();
         tileController.GetTileObject((Vector2Int)gridPosition).GetComponent<GridSingle>().catOn=state;
+        
         if(state){
+            if(!currentGridInfo.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Grid_End") && this.gameObject.GetComponent<SpriteRenderer>().color.a != 0){
             tileController.GetTileObject((Vector2Int)gridPosition).transform.Find("Sprite").gameObject.GetComponent<SpriteRenderer>().color=shadowColor;
+            }
         }else{
             tileController.GetTileObject((Vector2Int)gridPosition).transform.Find("Sprite").gameObject.GetComponent<SpriteRenderer>().color=Color.white;
         }

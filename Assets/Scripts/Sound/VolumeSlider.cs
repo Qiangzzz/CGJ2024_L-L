@@ -17,6 +17,8 @@ public class VolumeSlider : MonoBehaviour
             _slider.value = SoundManager.Instance.ReturnVolumeEffect();
             SoundManager.Instance.ChangeVolumeEffects(_slider.value);
             _slider.onValueChanged.AddListener(val => SoundManager.Instance.ChangeVolumeEffects(val));
+            SoundManager.Instance.ChangeVolumeExtraEffects(_slider.value);
+            _slider.onValueChanged.AddListener(val => SoundManager.Instance.ChangeVolumeExtraEffects(val));
         }
         if (_slider != null && _toggleMusic != false)
         {

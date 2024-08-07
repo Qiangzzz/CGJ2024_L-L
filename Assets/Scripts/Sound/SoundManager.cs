@@ -34,7 +34,7 @@ public class SoundManager : MonoBehaviour
     }
 
 
-    [SerializeField] private AudioSource _musicSource, _effectsSource;
+    [SerializeField] private AudioSource _musicSource, _effectsSource, _extraEffectsSource, ees1;
 
     private void Awake()
     {
@@ -64,6 +64,16 @@ public class SoundManager : MonoBehaviour
         _effectsSource.Stop();
         _effectsSource.PlayOneShot(clip);
     }
+    public void ExtraEffectPlayClip(AudioClip clip)
+    {
+        _extraEffectsSource.Stop();
+        _extraEffectsSource.PlayOneShot(clip);
+    }
+    public void ees1PlayClip(AudioClip clip)
+    {
+        ees1.Stop();
+        ees1.PlayOneShot(clip);
+    }
     public void MusicStop()
     {
         timer = _musicSource.time;
@@ -89,6 +99,11 @@ public class SoundManager : MonoBehaviour
         _effectsSource.volume = value;
         effectsVol = value;
     }
+    public void ChangeVolumeExtraEffects(float value)
+    {
+        _extraEffectsSource.volume = value;
+        effectsVol = value;
+    }
     public float ReturnVolumeEffect()
     {
         return effectsVol;
@@ -97,6 +112,10 @@ public class SoundManager : MonoBehaviour
     public void ToggleEffects()
     {
         _effectsSource.mute = !_effectsSource.mute;
+    }
+    public void ToggleExtraEffects()
+    {
+        _extraEffectsSource.mute = !_extraEffectsSource.mute;
     }
     public void ToggleMusic()
     {
@@ -111,6 +130,14 @@ public class SoundManager : MonoBehaviour
     public void EffectPlayStr(string str)
     {
         if (soundClip.ContainsKey(str)) EffectPlayClip(soundClip[str]);
+    }
+    public void ExtraEffectPlayStr(string str)
+    {
+        if (soundClip.ContainsKey(str)) ExtraEffectPlayClip(soundClip[str]);
+    }
+    public void ees1PlayStr(string str)
+    {
+        if (soundClip.ContainsKey(str)) ees1PlayClip(soundClip[str]);
     }
     public float returnTime()
     {

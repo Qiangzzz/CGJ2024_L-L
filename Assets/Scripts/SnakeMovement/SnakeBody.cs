@@ -14,6 +14,9 @@ public class SnakeBody : MonoBehaviour
     private int growState=0;
     private bool growUp=false;
     public bool awake=false;
+    TileMapGameObjectController tileController;
+    bool end = false;
+    bool changed = false;
     public void Init(
             SnakeHead head, 
             Vector3Int birthGrid,
@@ -36,13 +39,18 @@ public class SnakeBody : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        tileController=GameObject.Find("GridGameObjectController").GetComponent<TileMapGameObjectController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        GridSingle currentGridInfo=tileController.GetTileObject((Vector2Int)targetGrid).GetComponent<GridSingle>();
+        if(currentGridInfo.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Grid_End") && !this.changed){
+            this.changed = true;
+            Invoke("changeAlpha", 1f);
+        }
+        print(currentGridInfo.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Grid_End"));
     }
     public void changeTarget(Vector3Int newTarget, int newDirection){
         if(!awake){
@@ -119,7 +127,7 @@ public class SnakeBody : MonoBehaviour
     public void activeGrow(){
         if(!awake){
             awake=true;
-            head.soundEffect("4");
+            //head.soundEffect("4");
         }else{
             growState=2;
         }
@@ -132,5 +140,15 @@ public class SnakeBody : MonoBehaviour
             }
         }
         head.setGridCatOn(currentGrid, false);
+    }
+    private void changeAlpha(){
+        this.gameObject.GetComponent<SpriteRenderer>().color = new Color(255,255,255,0);
+        SoundManager.Instance.EffectPlayStr("22");
+        print("ef");
+        if(nextBody == null && !end){
+            SoundManager.Instance.ExtraEffectPlayStr("23");
+            tileController.FilpAllTile(new Vector2Int(0,0));
+            end = true;
+        }
     }
 }

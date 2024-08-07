@@ -41,6 +41,7 @@ public class TrailController : MonoBehaviour
                 SetTrail(MouseGrid, CurDirect);
                 CurDirect =Directions.None;
                 mouseGo.GetComponentInChildren<SpriteRenderer>().sprite = null;
+                SoundManager.Instance.EffectPlayStr("24");
             }
         }
 

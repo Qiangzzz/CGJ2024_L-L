@@ -24,6 +24,8 @@ public class TileMapGameObjectController : MonoBehaviour
     public GameObject[] smallObjectsPrefabsLevel1;
     public GameObject[] smallObjectLevel2;
     public GameObject[] smallObjectLevel3; // ��������С�����Ԥ�Ƽ�����
+    public GameObject[] smallObjectLevel4;
+    public GameObject[] smallObjectLevel5;
 
     public float smallObjectProbability = 0.2f; // С�������ɵĸ���
 
@@ -54,6 +56,7 @@ public class TileMapGameObjectController : MonoBehaviour
 
     public GameObject snakeCopy;
     ScrollManager scrollManager;
+    private bool levelIsEnd = false;
     void Start()
     {
         InstorageTileMapData();
@@ -90,6 +93,7 @@ public class TileMapGameObjectController : MonoBehaviour
         newSnake.SetActive(true);
         currentFoods.Clear();
         foodCount = 0;
+        levelIsEnd = false;
         //地块归位
         foreach (var _tileMap in TileMapData)
         {
@@ -97,14 +101,15 @@ public class TileMapGameObjectController : MonoBehaviour
             _grid.direction = Directions.None;
             _grid.catOn = false;
             _grid.GetComponentInChildren<SpriteRenderer>().color = Color.white;
-            if( _grid.transform.GetChild(0).childCount >= 2){
+            _grid.passNumber = 0;
+            /*if( _grid.transform.GetChild(0).childCount >= 2){
             _grid.transform.GetChild(0).GetChild(1).gameObject.SetActive(false);
             Destroy(_grid.transform.GetChild(0).GetChild(1).gameObject);
             }
             if( _grid.transform.GetChild(0).childCount >= 1 && _grid.transform.GetChild(0).childCount < 2){
             _grid.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             Destroy(_grid.transform.GetChild(0).GetChild(0).gameObject);
-            }
+            }*/
         }
     }
     void GenerateFood()
@@ -126,11 +131,11 @@ public class TileMapGameObjectController : MonoBehaviour
                 float randomNumber = Random.Range(0f,1f);
                 GameObject foodPrefab = foodPrefabs[0];
                 int foodIndex = 0;
-                if(randomNumber < 0.01f){
+                if(randomNumber < 0.05f){
                     foodIndex = Random.Range(0, EasterEggFoodPrefabs.Length);
                     foodPrefab = EasterEggFoodPrefabs[foodIndex];
                 }
-                else if(randomNumber >= 0.01f){
+                else if(randomNumber >= 0.05f){
                     foodIndex = Random.Range(0, foodPrefabs.Length);
                     foodPrefab = foodPrefabs[foodIndex];
                 }
@@ -144,7 +149,13 @@ public class TileMapGameObjectController : MonoBehaviour
 
                 // ����ʳ������
                 Food foodComponent = foodObject.GetComponent<Food>();
-                foodComponent.foodType = (FoodType)foodIndex;
+                if(randomNumber < 0.05f){
+                    foodComponent.foodType = (FoodType)foodIndex+6;
+                }
+                 else if(randomNumber >= 0.05f){
+                    foodComponent.foodType = (FoodType)foodIndex;
+                }
+
                 // ���ӵ���ռ�ø��Ӽ�����
                 occupiedTiles.Add(gridPos);
 
@@ -165,9 +176,11 @@ public class TileMapGameObjectController : MonoBehaviour
     public void RemoveFood(Vector2Int gridPos)
     {
         foodCount++;
-        if (foodCount >= 2)
+        if (foodCount >= 10 && !levelIsEnd )
         {
-            FilpAllTile(FilpStartPos);
+            endLevel();
+            levelIsEnd = true;
+            //FilpAllTile(FilpStartPos);
         }
         
         GridSingle _grid = GetTileObject(gridPos).GetComponent<GridSingle>();
@@ -179,6 +192,12 @@ public class TileMapGameObjectController : MonoBehaviour
         if (currentFoods.Contains(foodObject))
         {
             currentFoods.Remove(foodObject);
+        }
+        if ((int)foodObject.GetComponent<Food>().foodType < 6){
+            SoundManager.Instance.ExtraEffectPlayStr("20");
+        }
+        if ((int)foodObject.GetComponent<Food>().foodType >= 6){
+            SoundManager.Instance.ExtraEffectPlayStr("21");
         }
         Destroy(foodObject);
         scrollManager.setBallIndex(foodObject.GetComponent<Food>());
@@ -310,6 +329,8 @@ public class TileMapGameObjectController : MonoBehaviour
         Transform level1Transf = GameObject.Find("Level1").transform;
         Transform level2Transf = GameObject.Find("Level2").transform;
         Transform level3Transf = GameObject.Find("Level3").transform;
+        Transform level4Transf = GameObject.Find("Level4").transform;
+        Transform level5Transf = GameObject.Find("Level5").transform;
 
         foreach (Transform _transf in gridParentTransf)
         {
@@ -317,6 +338,8 @@ public class TileMapGameObjectController : MonoBehaviour
             _transf.Find("Sprite").GetComponent<SpriteRenderer>().sprite = level1Transf.Find(_name).GetComponent<SpriteRenderer>().sprite;
             _transf.GetComponentInChildren<GridAnimEvent>().level1TargetSprite = level2Transf.Find(_name).GetComponent<SpriteRenderer>().sprite;
             _transf.GetComponentInChildren<GridAnimEvent>().level2TargetSprite = level3Transf.Find(_name).GetComponent<SpriteRenderer>().sprite;
+            _transf.GetComponentInChildren<GridAnimEvent>().level3TargetSprite = level4Transf.Find(_name).GetComponent<SpriteRenderer>().sprite;
+            _transf.GetComponentInChildren<GridAnimEvent>().level4TargetSprite = level5Transf.Find(_name).GetComponent<SpriteRenderer>().sprite;
 
             Transform _transfChild = _transf.Find(spriteName);
             for (int i = _transfChild.childCount - 1; i >= 0; i--)
@@ -342,7 +365,14 @@ public class TileMapGameObjectController : MonoBehaviour
             {
                 _smallGoPrefabs = smallObjectLevel3;
             }
-
+            else if (CurLevel == 4)
+            {
+                _smallGoPrefabs = smallObjectLevel4;
+            }
+            else if (CurLevel == 5)
+            {
+                _smallGoPrefabs = smallObjectLevel5;
+            }
             //����С����
             if (Random.value < smallObjectProbability)
             {
@@ -431,6 +461,14 @@ public class TileMapGameObjectController : MonoBehaviour
             {
                 _smallGoPrefabs = smallObjectLevel3;
             }
+            else if (CurLevel == 3)
+            {
+                _smallGoPrefabs = smallObjectLevel4;
+            }
+            else if (CurLevel == 4)
+            {
+                _smallGoPrefabs = smallObjectLevel5;
+            }
             else
             {
                 //Debug.Log("");
@@ -462,6 +500,12 @@ public class TileMapGameObjectController : MonoBehaviour
         }
 
         generatedObjects.Clear(); // ����б�
+    }
+    void endLevel(){
+        var firstGrid = TileMapData[FilpStartPos];
+        GridSingle grid = firstGrid.GetComponent<GridSingle>();
+        SoundManager.Instance.ees1PlayStr("17");
+        grid.GetComponent<Animator>().Play("Grid_Flip3");
     }
     #endregion
 }
